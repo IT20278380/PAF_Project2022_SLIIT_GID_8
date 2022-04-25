@@ -1,6 +1,6 @@
 package com;
 
-//For REST Service
+//For REST Services
 import javax.ws.rs.*; 
 import javax.ws.rs.core.MediaType; 
 
