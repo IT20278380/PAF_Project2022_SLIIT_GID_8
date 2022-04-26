@@ -110,13 +110,20 @@ public class CustomersService {
 	}
 	
 	//Pay bill
-		@PUT
-		@Path("/Pay") 
-		@Consumes(MediaType.APPLICATION_JSON) 
+		@POST
+		@Path("/Payment") 
+		@Consumes(MediaType.APPLICATION_FORM_URLENCODED) 
 		@Produces(MediaType.TEXT_PLAIN) 
-		public String Payment(String UsersData) {
+		public String Payment(@FormParam("UserID") String UserID,
+				@FormParam("FullName") String FullName,
+				@FormParam("BankName") String BankName,
+				@FormParam("AccName") String AccName,
+				@FormParam("AccNo") String AccNo,
+				@FormParam("BrachName") String BrachName,
+				@FormParam("BillPrice") String BillPrice,
+				@FormParam("Date") String Date) {
 					
-		 //Convert the input string to a JSON object 
+		/* //Convert the input string to a JSON object 
 		 JsonObject jsonobj = new JsonParser().parse(UsersData).getAsJsonObject(); 
 				 
 		 //Read the values from the JSON object
@@ -127,9 +134,9 @@ public class CustomersService {
 		 String AccNo = jsonobj.get("AccNo").getAsString();
 		 String BrachName = jsonobj.get("BrachName").getAsString();
 		 String BillPrice = jsonobj.get("BillPrice").getAsString();
-		 String Date = jsonobj.get("Date").getAsString();
+		 String Date = jsonobj.get("Date").getAsString();*/
 				 
-		 String output = customers.Payment(UserID, FullName, BackName, AccName, AccNo, BrachName, BillPrice, Date); 
+		 String output = customers.Payment(UserID, FullName, BankName, AccName, AccNo, BrachName, BillPrice, Date); 
 			 
 			 return output; 
 		}

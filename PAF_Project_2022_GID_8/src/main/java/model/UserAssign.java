@@ -149,7 +149,7 @@ public class UserAssign {
 			} 
  
 				// create a prepared statement
-				String query = " insert into PowerPlant (`id`,`UserID`,`FullName`,`Address`,`City`,`MobileNumber`,`Email`,`PowerPlantNo`,`Remark`)" + " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				String query = " insert into PowerPlant (`id`,`UserID`,`FullName`,`Address`,`City`,`MobileNumber`,`Email`,`PowerPlant`,`Remark`)" + " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				 
 				PreparedStatement preparedStmt = con.prepareStatement(query); 
  
