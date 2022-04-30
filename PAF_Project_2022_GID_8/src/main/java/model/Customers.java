@@ -60,7 +60,6 @@ public class Customers {
 	public String ViewUsersProfile(String UserID) { 
 			 
 			String output = ""; 
-	 
 			try { 
 	 
 				CustomersCon customerCon = new CustomersCon();
@@ -328,7 +327,7 @@ public class Customers {
 							preparedStmt.execute();
 							preparedStmtUp.execute();
 							preparedStmtBa.execute();
-							output = "Inserted successfully"; 
+							output = "Payment successfully"; 
 						}
 					}else {
 						System.out.println("-------------------");
