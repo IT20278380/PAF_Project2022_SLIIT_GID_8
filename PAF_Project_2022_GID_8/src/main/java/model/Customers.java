@@ -41,12 +41,12 @@ public class Customers {
 				preparedStmt.execute();  
 				con.close(); 
  
-				output = "Inserted successfully"; 
+				output = "{\"status\":\"success\"}"; 
 		} 
  
 		catch (Exception e) { 
  
-			output = "Error while inserting the item."; 
+			output = "{\"status\":\"Error while inserting the item\"}"; 
  
 			System.err.println(e.getMessage());
 			System.err.println("----- Insert Error ! -----");
@@ -57,7 +57,7 @@ public class Customers {
 	} 
 	
 	//View Users Profile
-	public String ViewUsersProfile(String UserID) { 
+	public String ViewUsersProfile(String Email, String Password) { 
 			 
 			String output = ""; 
 			try { 
@@ -72,13 +72,16 @@ public class Customers {
 	 
 				// Prepare the html table to be displayed
 	 
-				output = "<table border='1'><tr><th>User ID</th><th>Full Name</th><th>Address</th>" + "<th>City</th>" + "<th>Mobile Number</th><th>Email</th><th>Power Plant</th>" + "<th>Update</th><th>Delete</th></tr>"; 
-				System.out.println(UserID);
+				output = "<table id='tab' class='addView'><tr class='viewTr'><th style='width:10%'>User ID</th><th style='width:15%'>Full Name</th><th style='width:15%'>Address</th>" + "<th style='width:10%'>City</th>" + "<th style='width:10%'>Mobile Number</th><th style='width:15%'>Email</th><th style='width:10%'>Power Plant</th>" + "<th style='width:7%'>Update</th><th style='width:7%'>Delete</th></tr>"; 
 				// create a prepared statement
-				String query = "select * from PowerPlant where UserID like '"+UserID+"'"; 
+				String query = "select * from PowerPlant where Email like '"+Email+"' and Password like '"+Password+"'"; 
 				Statement stmt = con.createStatement(); 
 				ResultSet rs = stmt.executeQuery(query);
 	 
+				if (!rs.isBeforeFirst() ) {    
+				   return "{\"status\":\"error\", \"data\": \"No Profile and Try Again.\"}";
+				} 
+					
 				// iterate through the rows in the result set
 				while (rs.next()) { 
 					String UID = rs.getString("UserID"); 
@@ -86,36 +89,39 @@ public class Customers {
 					String Address = rs.getString("Address"); 
 					String City = rs.getString("City"); 
 					String MobileNumber = rs.getString("MobileNumber"); 				
-					String Email = rs.getString("Email");
+					String Em = rs.getString("Email");
 					String PowerPlant = rs.getString("PowerPlant");
 	 
 					// Add into the html table 
-					output += "<tr><td>" + UID + "</td>"; 
+					output += "<tr class='viewTd' style='height:60px'><td>" + UID + "</td>"; 
 					output += "<td>" + FullName + "</td>"; 
 					output += "<td>" + Address + "</td>"; 
 					output += "<td>" + City + "</td>";  
 					output += "<td>" + MobileNumber + "</td>";
-					output += "<td>" + Email + "</td>"; 
+					output += "<td>" + Em + "</td>"; 
 					output += "<td>" + PowerPlant + "</td>";
 	 
 					// buttons
-					output += "<td><form method='post' action='#'>" + "<input name='btnUp' type='submit' value='Update' class='btn btn-danger'>" + "<input name='CustomersID' type='hidden' value='" + UserID  + "'>" + "</form></td><td><input name='btnUp' type='submit' value='Delete' class='btn btn-danger'></td></tr>"; 
+					output += "<td><input id='btnUpdate' name='btnUpdate' type='button' value='Update' class='btnUpdate btn btn-outline-primary'></td>"
+							+ "<td><input id='btnRemove' name='btnRemove' type='button' value='Remove' class='btnRemove btn btn-outline-danger'></td></tr>"; 
 	 
 				} 
 	 
 				con.close(); 
 				// Complete the html table
 				output += "</table>"; 
+				String out = "{\"status\":\"success\", \"data\": \"" + output + "\"}"; 
+
+				return out;
 			} 
 	 
 			catch (Exception e) { 
-				output = "Error while reading the items."; 
+				output = "{\"status\":\"error\", \"data\": \"Error while View the item.\"}";
+				
 				System.err.println(e.getMessage()); 
 				System.err.println("----- Error for Read ! -----");
-	 
+				return output;
 			} 
-	 
-			return output; 
 		}
 	
 	//Update Customer Profile
@@ -148,12 +154,12 @@ public class Customers {
 			// execute the statement
 			preparedStmt.execute(); 
 			con.close(); 
-			output = "Updated successfully"; 
+			output = "{\"status\":\"success\"}"; 
 		} 
  
 		catch (Exception e) { 
 			
-			output = "Error while updating the item."; 
+			output = "{\"status\":\"Error while Updating the item\"}"; 
 			System.err.println(e.getMessage()); 
 		} 
  
@@ -186,12 +192,12 @@ public class Customers {
 				// execute the statement
 				preparedStmt.execute(); 
 				con.close(); 
-				output = "Deleted successfully"; 
+				output = "{\"status\":\"success\"}"; 
 	 
 			} 
 	 
 			catch (Exception e) { 
-				output = "Error while deleting the item."; 
+				output = "{\"status\":\"Error while Deleting the item\"}"; 
 				System.err.println(e.getMessage()); 
 	 
 			} 
@@ -216,7 +222,7 @@ public class Customers {
 					} 
 		 
 					// Prepare the html table to be displayed
-					output = "<table border='1'><tr><th>User ID</th><th>Full Name</th>" + "<th>City</th>" + "<th>Mobile Number</th><th>Unit</th>" + "<th>Price</th><th>Payment</th></tr>"; 
+					//output = "<table border='1'><tr><th>User ID</th><th>Full Name</th>" + "<th>City</th>" + "<th>Mobile Number</th><th>Unit</th>" + "<th>Price</th><th>Payment</th></tr>"; 
 
 					// create a prepared statement
 					String query = "select * from bill where UserID like '"+UserID+"'"; 
@@ -232,32 +238,56 @@ public class Customers {
 						String Unit = rs.getString("Unit");
 						String Price = rs.getString("Price");
 		 
-						// Add into the html table 
+						/*// Add into the html table 
 						output += "<tr><td>" + UID + "</td>"; 
 						output += "<td>" + FullName + "</td>"; 
 						output += "<td>" + City + "</td>";  
 						output += "<td>" + MobileNumber + "</td>";
 						output += "<td>" + Unit + "</td>"; 
-						output += "<td>" + Price + "</td>";
+						output += "<td>" + Price + "</td>";*/
 		 
 						// buttons
-						output += "<td><form method='post' action='#'>" + "<input name='btnPay' type='submit' value='Payment' class='btn btn-danger'>" + "<input name='CustomersID' type='hidden' value='" + UserID  + "'>" + "</form></td></tr>"; 
+						//output += "<td><form method='post' action='#'>" + "<input name='btnPay' type='submit' value='Payment' class='btn btn-danger'>" + "<input name='CustomersID' type='hidden' value='" + UserID  + "'>" + "</form></td></tr>"; 
 		 
+						output = "<div class='card'>"
+								+ "<h5 id='billtop'><b>Electro Gird Power Unit Customer Bill</b></h5>"
+								+ "<form class='form-card' onsubmit='event.preventDefault()'>"
+								+ "<div class='row justify-content-between text-left'>"
+								+ "<div class='form-group col-sm-6 flex-column d-flex'><label class='form-control-label px-3'>Full Name :<span class='text-danger'></span></label> <input type='text' id='FullName' value='"+FullName+"' disabled></div>"
+								+ "<div class='form-group col-sm-6 flex-column d-flex'> <label class='form-control-label px-3'>Mobile Number :<span class='text-danger'></span></label> <input type='text' id='UserId' value='"+UID+"' disabled> </div>"
+								+ "</div>"
+								+ "<div class='row justify-content-between text-left'>"
+								+ "<div class='form-group col-sm-6 flex-column d-flex'> <label class='form-control-label px-3'>Mobile Number :<span class='text-danger'></span></label> <input type='text' id='MobileNumber' value='"+MobileNumber+"' disabled></div>"
+								+ "<div class='form-group col-sm-6 flex-column d-flex'> <label class='form-control-label px-3'>City :<span class='text-danger'></span></label> <input type='text' id='City' value='"+City+"' disabled></div>"
+								+ "</div>"
+								+ "<div class='row justify-content-between text-left'>"
+								+ "<div class='form-group col-sm-6 flex-column d-flex'> <label class='form-control-label px-3'>Unit :<span class='text-danger'></span></label> <input type='text' id='Unit' value='"+Unit+"' disabled> </div>"
+								+ "<div class='form-group col-sm-6 flex-column d-flex'> <label class='form-control-label px-3'>Price :<span class='text-danger'></span></label> <input type='text' id='Price' value='"+Price+"' disabled> </div>"
+								+ "</div>"
+								+ "<div class='row justify-content-between text-left'>"
+								+ "<div class='form-group col-12 flex-column d-flex'> <input id='paybu' name='paybu' type='button' value='Click Here For Payment' class='paybu btn btn-outline-primary'></div>"
+								+ "</div>"
+								+ "</form>"
+								+ "</div>";
+						
 					} 
 		 
 					con.close(); 
 					// Complete the html table
 					output += "</table>"; 
+					
+					String out = "{\"status\":\"success\", \"data\": \"" + output + "\"}"; 
+
+					return out;
 				} 
 		 
 				catch (Exception e) { 
-					output = "Error while reading the items."; 
+					output = "{\"status\":\"error\", \"data\": \"Error while View the Bill.\"}";
 					System.err.println(e.getMessage()); 
 					System.err.println("----- Error for Read ! -----");
 		 
+					return output;
 				} 
-		 
-				return output; 
 			}
 
 		//Payment bank acc
@@ -284,7 +314,6 @@ public class Customers {
 				}
 	 
 					String ckeck = "select * from "+BankName+" where Accno like '"+AccNo+"'and AccName like '"+AccName+"'";
-					System.out.println(ckeck);
 					Statement stmt = bank.createStatement(); 
 					ResultSet rs = stmt.executeQuery(ckeck);
 
@@ -294,7 +323,6 @@ public class Customers {
 					}
 
 					int id = Integer.parseInt(uID);
-					
 					if(id != 0) {
 						credit = Integer.parseInt(Amount) - Integer.parseInt(BillPrice);
 						
@@ -327,18 +355,18 @@ public class Customers {
 							preparedStmt.execute();
 							preparedStmtUp.execute();
 							preparedStmtBa.execute();
-							output = "Payment successfully"; 
+							output = "{\"status\":\"success\"}"; 
 						}
 					}else {
 						System.out.println("-------------------");
 					}
 	 
-					output = "Inserted successfully"; 
+					output = "{\"status\":\"success\"}"; 
 			} 
 	 
 			catch (Exception e) { 
 	 
-				output = "Error while inserting the item."; 
+				output = "{\"status\":\"Error while inserting the item\"}"; 
 	 
 				System.err.println(e.getMessage());
 				System.err.println("----- Insert Error ! -----");

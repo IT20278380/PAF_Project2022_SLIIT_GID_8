@@ -29,28 +29,29 @@ public class CustomersService {
 	 @FormParam("City") String City, 
 	 @FormParam("MobileNumber") String MobileNumber,
 	 @FormParam("Email") String Email) { 
-		
+	System.out.println(FullName);
 	 String output = customers.insertCustomers(FullName, Address, City, MobileNumber, Email); 
 		return output; 
 	}
 	
 	// Read Users Profile
-	@GET
+	@POST
 	@Path("/One") 
 	@Consumes(MediaType.APPLICATION_XML) 
 	@Produces(MediaType.TEXT_PLAIN) 
-	public String ViewUsersProfile(String ProfileData) {
-				
+	public String ViewUsersProfile(String ProfileData) {	
+	
 	 //Convert the input string to an XML document
-	 Document doc = Jsoup.parse(ProfileData, "", Parser.xmlParser()); 
+	Document doc = Jsoup.parse(ProfileData, "", Parser.xmlParser()); 
 				 
 	 //Read the value from the element <itemID>
-	 String UserID = doc.select("UserID").text(); 
-	 String output = customers.ViewUsersProfile(UserID); 
+	 String Email = doc.select("Email").text();
+	 String Password = doc.select("Password").text(); 
+	 
+	 String output = customers.ViewUsersProfile(Email, Password); 
 			
 		return output; 
-	} 
-		
+	}
 	
 	//Update Users
 	@PUT
@@ -58,7 +59,6 @@ public class CustomersService {
 	@Consumes(MediaType.APPLICATION_JSON) 
 	@Produces(MediaType.TEXT_PLAIN) 
 	public String UpdateProfile(String UsersData) {
-				
 	 //Convert the input string to a JSON object 
 	 JsonObject jsonobj = new JsonParser().parse(UsersData).getAsJsonObject(); 
 			 
@@ -81,7 +81,7 @@ public class CustomersService {
 	@Consumes(MediaType.APPLICATION_XML) 
 	@Produces(MediaType.TEXT_PLAIN) 
 	public String DeleteProfiles(String ProfileData) {
-			
+		
 	 //Convert the input string to an XML document
 	 Document doc = Jsoup.parse(ProfileData, "", Parser.xmlParser()); 
 			 
@@ -93,7 +93,7 @@ public class CustomersService {
 	}
 	
 	// Read Bill 
-	@GET
+	@POST
 	@Path("/Bill") 
 	@Consumes(MediaType.APPLICATION_XML) 
 	@Produces(MediaType.TEXT_PLAIN) 
@@ -122,20 +122,7 @@ public class CustomersService {
 				@FormParam("BrachName") String BrachName,
 				@FormParam("BillPrice") String BillPrice,
 				@FormParam("Date") String Date) {
-					
-		/* //Convert the input string to a JSON object 
-		 JsonObject jsonobj = new JsonParser().parse(UsersData).getAsJsonObject(); 
-				 
-		 //Read the values from the JSON object
-		 String UserID = jsonobj.get("UserID").getAsString();
-		 String FullName = jsonobj.get("FullName").getAsString();
-		 String BackName = jsonobj.get("BackName").getAsString(); 
-		 String AccName = jsonobj.get("AccName").getAsString();
-		 String AccNo = jsonobj.get("AccNo").getAsString();
-		 String BrachName = jsonobj.get("BrachName").getAsString();
-		 String BillPrice = jsonobj.get("BillPrice").getAsString();
-		 String Date = jsonobj.get("Date").getAsString();*/
-				 
+			
 		 String output = customers.Payment(UserID, FullName, BankName, AccName, AccNo, BrachName, BillPrice, Date); 
 			 
 			 return output; 
